@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>바다 조금숙</title>
+<meta name="description" content="성장하고 노력하는 바다(조금숙)의 개인 홈페이지">
+
+<!-- 폰트 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<!-- 다크모드: 저장값 → data-theme → 시스템 설정 순으로 결정 (깜빡임 방지를 위해 가장 먼저 실행) -->
+<script>
+  (function () {
+    var root = document.documentElement;
+    var saved = null;
+    try { saved = localStorage.getItem("theme"); } catch (e) {}
+    var attr = root.getAttribute("data-theme");
+    var theme = saved || attr || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    if (theme === "dark") root.classList.add("dark");
+  })();
+</script>
+
+<!-- Tailwind CSS (Play CDN) -->
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          navy: {
+            50:  "#f2f5fb",
+            100: "#e3e9f5",
+            200: "#c5d1ea",
+            300: "#9cb0d8",
+            400: "#6c87bf",
+            500: "#4766a6",
+            600: "#334f8a",
+            700: "#273e6f",
+            800: "#1c2d52",
+            900: "#131f3a",
+            950: "#0b1325"
+          }
+        },
+        fontFamily: {
+          sans: ["'Noto Sans KR'", "'Apple SD Gothic Neo'", "'Malgun Gothic'", "system-ui", "sans-serif"],
+          mono: ["'JetBrains Mono'", "ui-monospace", "Consolas", "monospace"]
+        }
+      }
+    }
+  };
+</script>
+
+<style>
+  /* 좌우 여백: 최소 16px, 휴대폰 노치/시스템 바도 피함 */
+  .gutter {
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  @media (min-width: 768px) {
+    .gutter {
+      padding-left: max(32px, env(safe-area-inset-left, 0px));
+      padding-right: max(32px, env(safe-area-inset-right, 0px));
+    }
+  }
+  html { scroll-behavior: smooth; }
+  h1, h2, h3 { text-wrap: balance; }
+  /* 스크롤 시 은은하게 떠오르는 효과 (기본은 보이는 상태) */
+  .reveal { transition: opacity .6s ease, transform .6s ease; }
+  .reveal.pending { opacity: 0; transform: translateY(16px); }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal, .reveal.pending { transition: none; opacity: 1; transform: none; }
+  }
+  /* 휴대폰 상단 안전 영역 배경 */
+  body::before {
+    content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 60;
+    background: rgb(255 255 255 / .85);
+  }
+  .dark body::before { background: rgb(11 19 37 / .85); }
+</style>
+</head>
+
+<body class="bg-white text-navy-950 antialiased dark:bg-navy-950 dark:text-navy-50 font-sans">
+
+  <!-- ===================== 헤더 ===================== -->
+  <header class="sticky z-50 border-b border-navy-100/70 bg-white/80 backdrop-blur-md dark:border-navy-800/70 dark:bg-navy-950/80" style="top: env(safe-area-inset-top, 0px)">
+    <div class="gutter mx-auto flex h-16 max-w-6xl items-center justify-between">
+      <a href="#top" class="text-lg font-extrabold tracking-tight">바다<span class="text-navy-500 dark:text-navy-300">.</span></a>
+
+      <nav class="hidden items-center gap-8 text-sm text-navy-700 dark:text-navy-200 md:flex" aria-label="주요 메뉴">
+        <a href="#about" class="hover:text-navy-950 dark:hover:text-white">소개</a>
+        <a href="#contact" class="hover:text-navy-950 dark:hover:text-white">연락하기</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <button id="themeToggle" type="button" aria-label="다크 모드 전환"
+          class="grid h-10 w-10 place-items-center rounded-full text-navy-700 hover:bg-navy-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-500 dark:text-navy-200 dark:hover:bg-navy-900">
+          <!-- 해 아이콘 (다크일 때 표시) -->
+          <svg class="hidden h-5 w-5 dark:block" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path stroke-linecap="round" d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+          </svg>
+          <!-- 달 아이콘 (라이트일 때 표시) -->
+          <svg class="h-5 w-5 dark:hidden" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linejoin="round" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path>
+          </svg>
+        </button>
+
+        <button id="menuToggle" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileMenu"
+          class="grid h-10 w-10 place-items-center rounded-full text-navy-700 hover:bg-navy-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-500 dark:text-navy-200 dark:hover:bg-navy-900 md:hidden">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 모바일 메뉴 -->
+    <nav id="mobileMenu" hidden class="gutter border-t border-navy-100 pb-4 dark:border-navy-800 md:hidden" aria-label="모바일 메뉴">
+      <ul class="mx-auto flex max-w-6xl flex-col pt-2 text-base">
+        <li><a href="#about" class="block py-3">소개</a></li>
+        <li><a href="#contact" class="block py-3">연락하기</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <!-- ===================== 히어로 ===================== -->
+    <section class="gutter">
+      <div class="mx-auto max-w-6xl py-24 md:py-36">
+        <p class="reveal mb-6 font-mono text-sm text-navy-500 dark:text-navy-300">안녕하세요, 저는 조금숙입니다 👋</p>
+        <h1 class="reveal text-4xl font-extrabold leading-[1.15] tracking-tight sm:text-6xl md:text-7xl"
+            aria-label="어제보다 한 뼘 더 성장하는 사람, 바다">
+          <span aria-hidden="true">어제보다 한 뼘 더</span>
+          <!-- 키워드 롤링: 아래 항목이 위로 한 칸씩 올라갑니다 -->
+          <span class="block h-[1.15em] overflow-hidden text-navy-500 dark:text-navy-300" aria-hidden="true">
+            <span id="rollerTrack" class="block">
+              <span class="block h-[1.15em] whitespace-nowrap">성장하는</span>
+              <span class="block h-[1.15em] whitespace-nowrap">깔끔한</span>
+              <span class="block h-[1.15em] whitespace-nowrap">문제를 해결하는</span>
+              <span class="block h-[1.15em] whitespace-nowrap">열정 가득한</span>
+              <span class="block h-[1.15em] whitespace-nowrap">노력하는</span>
+            </span>
+          </span>
+          <span class="block" aria-hidden="true">사람, 바다</span>
+        </h1>
+        <p class="reveal mt-8 max-w-xl text-lg leading-relaxed text-navy-700 dark:text-navy-200 md:text-xl">
+          복잡한 문제를 깔끔하게 정리하고, 끝까지 붙잡고 해결하는 걸 좋아합니다.
+          작은 노력이 쌓여 큰 변화가 된다는 걸 믿어요.
+        </p>
+        <div class="reveal mt-10 flex flex-wrap gap-3">
+          <a href="#contact"
+             class="rounded-full bg-navy-800 px-7 py-3.5 text-sm font-medium text-white hover:bg-navy-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-500 focus-visible:ring-offset-2 dark:bg-white dark:text-navy-950 dark:hover:bg-navy-100 dark:focus-visible:ring-offset-navy-950">
+            연락하기
+          </a>        </div>
+
+        <!-- 핵심 키워드 -->
+        <ul id="keywordList" class="reveal mt-16 flex flex-wrap gap-x-6 gap-y-3 text-sm text-navy-500 dark:text-navy-300" aria-label="핵심 키워드">
+          <li class="transition-colors duration-300">#성장</li><li class="transition-colors duration-300">#깔끔함</li><li class="transition-colors duration-300">#문제해결</li><li class="transition-colors duration-300">#열정</li><li class="transition-colors duration-300">#노력</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== About ===================== -->
+    <section id="about" class="gutter scroll-mt-16 bg-navy-50/60 dark:bg-navy-900/40">
+      <div class="mx-auto grid max-w-6xl gap-12 py-24 md:grid-cols-[1fr_1.4fr] md:gap-20 md:py-32">
+        <div class="reveal">
+          <p class="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-navy-500 dark:text-navy-300">About Me</p>
+          <h2 class="text-3xl font-bold tracking-tight md:text-4xl">조금씩, 꾸준히,<br>그리고 끝까지.</h2>
+
+          <!-- 프로필 카드 -->
+          <div class="mt-10 flex items-center gap-4">
+            <div class="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-navy-800 text-xl font-bold text-white dark:bg-navy-200 dark:text-navy-950" aria-hidden="true">바다</div>
+            <dl class="text-sm leading-6">
+              <dt class="sr-only">이름</dt><dd class="font-semibold">조금숙 · 바다</dd>
+              <dt class="sr-only">한 줄 소개</dt><dd class="text-navy-600 dark:text-navy-300">배우고 만드는 사람</dd>
+            </dl>
+          </div>
+        </div>
+
+        <div class="reveal min-w-0">
+          <p class="text-lg leading-relaxed text-navy-700 dark:text-navy-200">
+            ‘바다’라는 이름처럼 넓게 받아들이고 깊게 파고드는 사람이 되고 싶습니다.
+            새로운 걸 배우는 과정이 즐겁고, 어제 몰랐던 걸 오늘 알게 되는 순간을 가장 좋아해요.
+            이 홈페이지는 그동안의 성장 기록을 가족과 친구들에게 보여 드리려고 만들었습니다.
+          </p>
+
+          <ul class="mt-12 grid gap-8 sm:grid-cols-2">
+            <li>
+              <h3 class="font-semibold">성장</h3>
+              <p class="mt-2 text-sm leading-relaxed text-navy-600 dark:text-navy-300">완벽보다 어제보다 나은 오늘을 목표로 합니다.</p>
+            </li>
+            <li>
+              <h3 class="font-semibold">깔끔함</h3>
+              <p class="mt-2 text-sm leading-relaxed text-navy-600 dark:text-navy-300">복잡한 것을 단순하게 정리하는 일을 좋아합니다.</p>
+            </li>
+            <li>
+              <h3 class="font-semibold">문제해결</h3>
+              <p class="mt-2 text-sm leading-relaxed text-navy-600 dark:text-navy-300">막히면 원인을 하나씩 좁혀 가며 끝까지 풉니다.</p>
+            </li>
+            <li>
+              <h3 class="font-semibold">열정과 노력</h3>
+              <p class="mt-2 text-sm leading-relaxed text-navy-600 dark:text-navy-300">좋아하는 일에는 시간을 아끼지 않습니다.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== Contact ===================== -->
+    <section id="contact" class="gutter scroll-mt-16">
+      <div class="mx-auto grid max-w-6xl gap-12 py-24 md:grid-cols-[1fr_1.4fr] md:gap-20 md:py-32">
+        <div class="reveal">
+          <p class="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-navy-500 dark:text-navy-300">Contact</p>
+          <h2 class="text-3xl font-bold tracking-tight md:text-4xl">편하게<br>연락 주세요</h2>
+          <p class="mt-6 max-w-sm leading-relaxed text-navy-600 dark:text-navy-300">안부 인사도, 궁금한 점도 모두 환영해요.</p>
+
+          <ul class="mt-10 space-y-5 text-sm">
+            <li class="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span class="w-20 text-navy-500 dark:text-navy-400">이메일</span>
+              <span id="emailText" class="select-all font-medium">msksam@daum.net</span>
+              <button id="copyEmail" type="button"
+                class="rounded-full border border-navy-200 px-3 py-1 text-xs hover:border-navy-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-500 dark:border-navy-700 dark:hover:border-navy-500">복사</button>
+            </li>
+          </ul>
+        </div>
+
+        <form id="contactForm" class="reveal min-w-0 space-y-5 rounded-3xl border border-navy-100 bg-white p-6 dark:border-navy-800 dark:bg-navy-950 md:p-10" novalidate>
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="name" class="mb-2 block text-sm font-medium">이름</label>
+              <input id="name" name="name" type="text" required autocomplete="name" placeholder="홍길동"
+                class="w-full rounded-xl border border-navy-200 bg-white px-4 py-3 text-base outline-none placeholder:text-navy-300 focus:border-navy-500 focus:ring-2 focus:ring-navy-500/20 dark:border-navy-700 dark:bg-navy-900 dark:placeholder:text-navy-500">
+            </div>
+            <div>
+              <label for="email" class="mb-2 block text-sm font-medium">이메일</label>
+              <input id="email" name="email" type="email" required autocomplete="email" placeholder="name@example.com"
+                class="w-full rounded-xl border border-navy-200 bg-white px-4 py-3 text-base outline-none placeholder:text-navy-300 focus:border-navy-500 focus:ring-2 focus:ring-navy-500/20 dark:border-navy-700 dark:bg-navy-900 dark:placeholder:text-navy-500">
+            </div>
+          </div>
+          <div>
+            <label for="message" class="mb-2 block text-sm font-medium">메시지</label>
+            <textarea id="message" name="message" rows="5" required placeholder="하고 싶은 말을 적어 주세요"
+              class="w-full resize-y rounded-xl border border-navy-200 bg-white px-4 py-3 text-base outline-none placeholder:text-navy-300 focus:border-navy-500 focus:ring-2 focus:ring-navy-500/20 dark:border-navy-700 dark:bg-navy-900 dark:placeholder:text-navy-500"></textarea>
+          </div>
+
+          <p id="formStatus" class="min-h-[1.5rem] text-sm" role="status" aria-live="polite"></p>
+
+          <button type="submit"
+            class="w-full rounded-full bg-navy-800 px-7 py-3.5 text-sm font-medium text-white hover:bg-navy-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy-500 focus-visible:ring-offset-2 dark:bg-white dark:text-navy-950 dark:hover:bg-navy-100 dark:focus-visible:ring-offset-navy-950 sm:w-auto">
+            메시지 보내기
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== 푸터 ===================== -->
+  <footer class="gutter border-t border-navy-100 dark:border-navy-800">
+    <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 py-10 text-sm text-navy-500 dark:text-navy-400">
+      <p>© <span id="year"></span> 조금숙 · 바다</p>
+      <a href="#top" class="hover:text-navy-900 dark:hover:text-white">맨 위로 ↑</a>
+    </div>
+  </footer>
+
+<script>
+  /* =========================================================
+     1. 다크모드 전환
+     ========================================================= */
+  document.getElementById("themeToggle").addEventListener("click", function () {
+    var root = document.documentElement;
+    var isDark = root.classList.toggle("dark");
+    try { localStorage.setItem("theme", isDark ? "dark" : "light"); } catch (e) {}
+  });
+
+  /* =========================================================
+     2. 모바일 메뉴
+     ========================================================= */
+  var menuBtn = document.getElementById("menuToggle");
+  var menu = document.getElementById("mobileMenu");
+  menuBtn.addEventListener("click", function () {
+    var open = menu.hidden;
+    menu.hidden = !open;
+    menuBtn.setAttribute("aria-expanded", String(open));
+    menuBtn.setAttribute("aria-label", open ? "메뉴 닫기" : "메뉴 열기");
+  });
+  menu.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      menu.hidden = true;
+      menuBtn.setAttribute("aria-expanded", "false");
+    });
+  });
+
+  /* =========================================================
+     3. 이메일 복사
+     ========================================================= */
+  document.getElementById("copyEmail").addEventListener("click", function (e) {
+    var btn = e.currentTarget;
+    var text = document.getElementById("emailText").textContent;
+    function done(msg) {
+      btn.textContent = msg;
+      setTimeout(function () { btn.textContent = "복사"; }, 1600);
+    }
+    function fallback() {
+      var range = document.createRange();
+      range.selectNodeContents(document.getElementById("emailText"));
+      var sel = window.getSelection();
+      sel.removeAllRanges(); sel.addRange(range);
+      done("선택됨");
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done("복사됨"); }, fallback);
+    } else {
+      fallback();
+    }
+  });
+
+  /* =========================================================
+     4. 문의 양식
+     - 지금은 입력값 검사까지만 합니다.
+     - 실제로 메일을 받으려면 Formspree 등 서비스 주소를 FORM_ENDPOINT에 넣으세요.
+     ========================================================= */
+  var FORM_ENDPOINT = ""; // 예: "https://formspree.io/f/xxxxxxx"
+  var form = document.getElementById("contactForm");
+  var status = document.getElementById("formStatus");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = form.name.value.trim();
+    var email = form.email.value.trim();
+    var message = form.message.value.trim();
+
+    status.className = "min-h-[1.5rem] text-sm text-red-600 dark:text-red-400";
+    if (!name) { status.textContent = "이름을 입력해 주세요."; form.name.focus(); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { status.textContent = "이메일 주소 형식을 확인해 주세요. 예: name@example.com"; form.email.focus(); return; }
+    if (message.length < 5) { status.textContent = "메시지를 5자 이상 적어 주세요."; form.message.focus(); return; }
+
+    if (!FORM_ENDPOINT) {
+      status.className = "min-h-[1.5rem] text-sm text-navy-600 dark:text-navy-300";
+      status.textContent = "입력 내용이 확인되었어요. 아직 전송 서비스가 연결되지 않아 메시지는 보내지지 않았습니다. 위 이메일로 직접 연락 주세요.";
+      return;
+    }
+
+    status.className = "min-h-[1.5rem] text-sm text-navy-600 dark:text-navy-300";
+    status.textContent = "보내는 중…";
+    fetch(FORM_ENDPOINT, {
+      method: "POST",
+      headers: { "Accept": "application/json" },
+      body: new FormData(form)
+    }).then(function (res) {
+      if (!res.ok) throw new Error();
+      status.textContent = "메시지를 보냈어요. 고맙습니다!";
+      form.reset();
+    }).catch(function () {
+      status.className = "min-h-[1.5rem] text-sm text-red-600 dark:text-red-400";
+      status.textContent = "보내지 못했어요. 잠시 후 다시 시도하거나 이메일로 연락 주세요.";
+    });
+  });
+
+  /* =========================================================
+     5. 스크롤 등장 효과 (화면 아래쪽 요소만, 은은하게)
+     ========================================================= */
+  if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.remove("pending"); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach(function (el) {
+      if (el.getBoundingClientRect().top > window.innerHeight) {
+        el.classList.add("pending");
+        io.observe(el);
+      }
+    });
+  }
+
+  /* =========================================================
+     6. 히어로 키워드 롤링
+     - 2.4초마다 다음 키워드로 위로 굴러갑니다.
+     - 아래 #키워드 목록도 같은 순서로 강조됩니다.
+     - '동작 줄이기' 설정을 켠 방문자에게는 멈춰 있습니다.
+     ========================================================= */
+  (function () {
+    var track = document.getElementById("rollerTrack");
+    var words = track.children.length;
+    var tags = document.querySelectorAll("#keywordList li");
+    var ACTIVE = ["text-navy-950", "font-semibold", "dark:text-white"];
+    var index = 0;
+
+    // 마지막 다음에 첫 단어가 자연스럽게 이어지도록 첫 항목을 복제
+    track.appendChild(track.children[0].cloneNode(true));
+
+    function highlight(i) {
+      tags.forEach(function (li, n) {
+        ACTIVE.forEach(function (c) { li.classList.toggle(c, n === i); });
+      });
+    }
+    highlight(0);
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    function move(animate) {
+      track.style.transition = animate ? "transform .6s cubic-bezier(.65,0,.35,1)" : "none";
+      track.style.transform = "translateY(" + (-index * 1.15) + "em)";
+    }
+
+    track.addEventListener("transitionend", function () {
+      if (index === words) { // 복제한 첫 단어에 도착하면 조용히 처음으로
+        index = 0;
+        move(false);
+      }
+    });
+
+    setInterval(function () {
+      if (document.hidden) return;
+      index += 1;
+      move(true);
+      highlight(index % words);
+    }, 2400);
+  })();
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
